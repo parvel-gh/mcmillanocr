@@ -290,11 +290,10 @@ def capture_current_page(driver):
         
         # Scroll down using Page Down
         try:
-            # Click inside the iframe content area to ensure focus
-            # First switch to the innermost iframe where scroll happens
+            # Switch to the innermost iframe where scroll happens
             main_panel = driver.find_element(By.CSS_SELECTOR, "#main-panel, [id='main-panel']")
             
-            # Enter iframes to get focus in the right place
+            # Enter iframes to get to the content
             for _ in range(iframe_depth):
                 iframes = driver.find_elements(By.TAG_NAME, "iframe")
                 for iframe in iframes:
@@ -305,18 +304,10 @@ def capture_current_page(driver):
                     except:
                         continue
             
-            # Click on body to ensure focus
-            try:
-                body = driver.find_element(By.TAG_NAME, "body")
-                body.click()
-            except:
-                pass
-            
-            # Send Page Down to scroll
-            # Note: This leaves ~10% overlap between screenshots, which is acceptable
-            # to ensure no content is missed
+            # Send Page Down + 1 Arrow Down WITHOUT clicking (to avoid clicking images)
             actions = ActionChains(driver)
             actions.send_keys(Keys.PAGE_DOWN)
+            actions.send_keys(Keys.ARROW_DOWN)
             actions.perform()
             time.sleep(0.5)
             
